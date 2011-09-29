@@ -16,13 +16,22 @@ else
 GLIBC=
 endif
 
-ifneq (,$(findstring alpha,$(shell uname -m)))
-ARCH=axp
-RPMARCH=alpha
-else
-ARCH=i386
-RPMARCH=i386
+#ifneq (,$(findstring alpha,$(shell uname -m)))
+#ARCH=axp
+#RPMARCH=alpha
+#else
+#ARCH=i386
+#RPMARCH=i386
+#endif
+ARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/amd64/x86_64/)
+
+# Refuse all other platforms as a firewall against PEBKAC
+ifneq ($(ARCH),i386)
+ifneq ($(ARCH),x86_64)
+$(error arch $(ARCH) is currently not supported)
 endif
+endif
+
 NOARCH=noarch
 
 MOUNT_DIR=..
@@ -50,15 +59,12 @@ EGCS=/usr/local/egcs-1.1.2/bin/gcc
 CC=gcc
 BASE_CFLAGS=-Dstricmp=strcasecmp
 
-ifeq ($(ARCH),axp)
-RELEASE_CFLAGS=$(BASE_CFLAGS) -O6 -ffast-math -funroll-loops \
-	-fomit-frame-pointer -fexpensive-optimizations
-else
-RELEASE_CFLAGS=$(BASE_CFLAGS) -g -mpentiumpro -O6 -ffast-math -funroll-loops \
-	-fomit-frame-pointer -fexpensive-optimizations
-endif
+# -ffunroll-loops breaks build
+RELEASE_CFLAGS=$(BASE_CFLAGS) -g -O6 -mtune=core2 -ffast-math \
+    -fomit-frame-pointer -fexpensive-optimizations
 
-DEBUG_CFLAGS=$(BASE_CFLAGS) -g
+DEBUG_CFLAGS=$(BASE_CFLAGS) -g -O -ffast-math
+
 LDFLAGS=-ldl -lm
 SVGALDFLAGS=-lvga -lm
 XLDFLAGS=-L/usr/X11R6/lib -lX11 -lXext -lXxf86dga
@@ -90,44 +96,36 @@ DO_SHLIB_AS=$(CC) $(CFLAGS) $(SHLIBCFLAGS) -DELF -x assembler-with-cpp -o $@ -c 
 # SETUP AND BUILD
 #############################################################################
 
-ifeq ($(ARCH),axp)
-TARGETS=$(BUILDDIR)/q2ded \
-	$(BUILDDIR)/game$(ARCH).$(SHLIBEXT) \
-	$(BUILDDIR)/ctf/game$(ARCH).$(SHLIBEXT) \
-#	$(BUILDDIR)/xatrix/game$(ARCH).$(SHLIBEXT) \
-#	$(BUILDDIR)/rogue/game$(ARCH).$(SHLIBEXT)
-else
 TARGETS=$(BUILDDIR)/quake2 \
-	$(BUILDDIR)/game$(ARCH).$(SHLIBEXT) \
-	$(BUILDDIR)/ref_soft.$(SHLIBEXT) \
-	$(BUILDDIR)/ref_softx.$(SHLIBEXT) \
+	$(BUILDDIR)/game.$(SHLIBEXT) \
 	$(BUILDDIR)/ref_gl.$(SHLIBEXT) \
 	$(BUILDDIR)/ref_glx.$(SHLIBEXT) \
-	$(BUILDDIR)/ctf/game$(ARCH).$(SHLIBEXT) \
+#	$(BUILDDIR)/ref_soft.$(SHLIBEXT) \
+#	$(BUILDDIR)/ref_softx.$(SHLIBEXT) \
+#	$(BUILDDIR)/ctf/game$(ARCH).$(SHLIBEXT) \
 #	$(BUILDDIR)/xatrix/game$(ARCH).$(SHLIBEXT) \
 #	$(BUILDDIR)/rogue/game$(ARCH).$(SHLIBEXT)
-endif
 
 build_debug:
 	@-mkdir $(BUILD_DEBUG_DIR) \
-		$(BUILD_DEBUG_DIR)/client \
-		$(BUILD_DEBUG_DIR)/ded \
-		$(BUILD_DEBUG_DIR)/ref_soft \
-		$(BUILD_DEBUG_DIR)/ref_gl \
 		$(BUILD_DEBUG_DIR)/game \
-		$(BUILD_DEBUG_DIR)/ctf \
+		$(BUILD_DEBUG_DIR)/ref_gl \
+		$(BUILD_DEBUG_DIR)/client \
+#		$(BUILD_DEBUG_DIR)/ded \
+#		$(BUILD_DEBUG_DIR)/ref_soft \
+#		$(BUILD_DEBUG_DIR)/ctf \
 #		$(BUILD_DEBUG_DIR)/xatrix \
 #		$(BUILD_DEBUG_DIR)/rogue
 	$(MAKE) targets BUILDDIR=$(BUILD_DEBUG_DIR) CFLAGS="$(DEBUG_CFLAGS)"
 
 build_release:
 	@-mkdir $(BUILD_RELEASE_DIR) \
-		$(BUILD_RELEASE_DIR)/client \
-		$(BUILD_RELEASE_DIR)/ded \
-		$(BUILD_RELEASE_DIR)/ref_soft \
-		$(BUILD_RELEASE_DIR)/ref_gl \
 		$(BUILD_RELEASE_DIR)/game \
-		$(BUILD_RELEASE_DIR)/ctf \
+		$(BUILD_RELEASE_DIR)/ref_gl \
+		$(BUILD_RELEASE_DIR)/client \
+#		$(BUILD_RELEASE_DIR)/ded \
+#		$(BUILD_RELEASE_DIR)/ref_soft \
+#		$(BUILD_RELEASE_DIR)/ctf \
 #		$(BUILD_RELEASE_DIR)/xatrix \
 #		$(BUILD_RELEASE_DIR)/rogue
 	$(MAKE) targets BUILDDIR=$(BUILD_RELEASE_DIR) CFLAGS="$(RELEASE_CFLAGS)"
@@ -507,7 +505,7 @@ GAME_OBJS = \
 	$(BUILDDIR)/game/p_weapon.o \
 	$(BUILDDIR)/game/m_flash.o
 
-$(BUILDDIR)/game$(ARCH).$(SHLIBEXT) : $(GAME_OBJS)
+$(BUILDDIR)/game.$(SHLIBEXT) : $(GAME_OBJS)
 	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(GAME_OBJS)
 
 $(BUILDDIR)/game/g_ai.o :        $(GAME_DIR)/g_ai.c

@@ -48,7 +48,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <X11/Xatom.h>
 #include <X11/keysym.h>
 #include <X11/extensions/XShm.h>
-#include <X11/extensions/xf86dga.h>
+/*#include <X11/extensions/xf86dga.h>*/
+#include <X11/extensions/Xxf86dga.h>
 
 #include "../ref_soft/r_local.h"
 #include "../client/keys.h"
