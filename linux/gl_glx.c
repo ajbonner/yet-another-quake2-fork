@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/vt.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <signal.h>
 
 #include "../ref_gl/gl_local.h"
@@ -51,7 +52,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <X11/keysym.h>
 #include <X11/cursorfont.h>
 
-#include <X11/extensions/xf86dga.h>
+#include <X11/extensions/Xxf86dga.h>
 #include <X11/extensions/xf86vmode.h>
 
 glwstate_t glw_state;
@@ -629,11 +630,12 @@ int GLimp_SetMode( int *pwidth, int *pheight, int mode, qboolean fullscreen )
 	GLimp_Shutdown ();
 
 	// Mesa VooDoo hacks
+    /*
 	if (fullscreen)
 		putenv("MESA_GLX_FX=fullscreen");
 	else
 		putenv("MESA_GLX_FX=window");
-
+    */
 	if (!(dpy = XOpenDisplay(NULL))) {
 		fprintf(stderr, "Error couldn't open the X display\n");
 		return rserr_invalid_mode;

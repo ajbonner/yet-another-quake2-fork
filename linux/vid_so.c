@@ -48,8 +48,6 @@ qboolean	reflib_active = 0;
 
 #define VID_NUM_MODES ( sizeof( vid_modes ) / sizeof( vid_modes[0] ) )
 
-const char so_file[] = "/etc/quake2.conf";
-
 /** KEYBOARD **************************************************************/
 
 void Do_Key_Event(int key, qboolean down);
@@ -226,6 +224,8 @@ qboolean VID_LoadRefresh( char *name )
 	//regain root
 	seteuid(saved_euid);
 
+    /* remove need for /etc/quake2.conf */
+    /*
 	if ((fp = fopen(so_file, "r")) == NULL) {
 		Com_Printf( "LoadLibrary(\"%s\") failed: can't open %s (required for location of ref libraries)\n", name, so_file);
 		return false;
@@ -234,8 +234,8 @@ qboolean VID_LoadRefresh( char *name )
 	fclose(fp);
 	while (*fn && isspace(fn[strlen(fn) - 1]))
 		fn[strlen(fn) - 1] = 0;
-
-	strcat(fn, "/");
+    */
+	strcat(fn, "./");
 	strcat(fn, name);
 
 	// permission checking

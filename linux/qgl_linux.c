@@ -36,8 +36,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <dlfcn.h>
 
-const char so_file[] = "/etc/quake2.conf";
-
 /*
 //FX Mesa Functions
 fxMesaContext (*qfxMesaCreateContext)(GLuint win, GrScreenResolution_t, GrScreenRefresh_t, const GLint attribList[]);
@@ -3034,7 +3032,8 @@ qboolean QGL_Init( const char *dllname )
 	{
 		char	fn[MAX_OSPATH];
 		FILE *fp;
-
+/*
+// this whole /etc/quake2.conf stuff is stupid
 //		ri.Con_Printf(PRINT_ALL, "QGL_Init: Can't load %s from /etc/ld.so.conf: %s\n", 
 //				dllname, dlerror());
 
@@ -3050,6 +3049,9 @@ qboolean QGL_Init( const char *dllname )
 
 		strcat(fn, "/");
 		strcat(fn, dllname);
+*/
+        strcat(fn, "./");
+        strcat(fn, dllname);
 
 		if ( ( glw_state.OpenGLLib = dlopen( fn, RTLD_LAZY ) ) == 0 ) {
 			ri.Con_Printf( PRINT_ALL, "%s\n", dlerror() );
