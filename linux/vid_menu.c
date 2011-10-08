@@ -216,31 +216,46 @@ static void ApplyChanges( void *unused )
 */
 void VID_MenuInit( void )
 {
-	static const char *resolutions[] = 
-	{
+    static const char *resolutions[] = 
+    {
 		"[320 240  ]",
 		"[400 300  ]",
 		"[512 384  ]",
+		"[640 400  ]",
 		"[640 480  ]",
+		"[800 500  ]",
 		"[800 600  ]",
 		"[960 720  ]",
+		"[1024 480 ]",
+		"[1024 640 ]",
 		"[1024 768 ]",
+		"[1152 768 ]",
 		"[1152 864 ]",
+		"[1280 720 ]",
+		"[1280 800 ]",
+		"[1280 854 ]",
 		"[1280 1024]",
 		"[1600 1200]",
+		"[1680 1050]",
+		"[1920 1080]",
+		"[1920 1200]",
 		"[2048 1536]",
+		"[Custom   ]",
 		0
 	};
+
 	static const char *refs[] =
 	{
-		"[software       ]",
-		"[software X11   ]",
-		"[Mesa 3-D 3DFX  ]",
-		"[3DFXGL Miniport]",
-		"[OpenGL glX     ]",
-		"[Mesa 3-D glX   ]",
-		0
+        "[software       ]",
+        "[software X11   ]",
+        "[Mesa 3-D 3DFX  ]",
+        "[3DFXGL Miniport]",
+        "[OpenGL glX     ]",
+        "[Mesa 3-D glX   ]",
+        "[OpenGL]",
+        0
 	};
+
 	static const char *yesno_names[] =
 	{
 		"no",
@@ -250,7 +265,7 @@ void VID_MenuInit( void )
 	int i;
 
 	if ( !gl_driver )
-		gl_driver = Cvar_Get( "gl_driver", "libMesaGL.so.2", 0 );
+		gl_driver = Cvar_Get( "gl_driver", "libGL.so", 0 );
 	if ( !gl_picmip )
 		gl_picmip = Cvar_Get( "gl_picmip", "0", 0 );
 	if ( !gl_mode )
