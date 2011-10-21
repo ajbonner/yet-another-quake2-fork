@@ -451,6 +451,7 @@ pack_t *FS_LoadPackFile (char *packfile)
 	int				i;
 	packfile_t		*newfiles;
 	int				numpackfiles;
+    int             freadsize;
 	pack_t			*pack;
 	FILE			*packhandle;
 	dpackfile_t		info[MAX_FILES_IN_PACK];
@@ -460,32 +461,34 @@ pack_t *FS_LoadPackFile (char *packfile)
 	if (!packhandle)
 		return NULL;
 
-	fread (&header, 1, sizeof(header), packhandle);
-	if (LittleLong(header.ident) != IDPAKHEADER)
+	freadsize = fread(&header, 1, sizeof(header), packhandle);
+	if (LittleLong(header.ident) != IDPAKHEADER) {
 		Com_Error (ERR_FATAL, "%s is not a packfile", packfile);
+    }
 	header.dirofs = LittleLong (header.dirofs);
 	header.dirlen = LittleLong (header.dirlen);
 
 	numpackfiles = header.dirlen / sizeof(dpackfile_t);
 
-	if (numpackfiles > MAX_FILES_IN_PACK)
+	if (numpackfiles > MAX_FILES_IN_PACK) {
 		Com_Error (ERR_FATAL, "%s has %i files", packfile, numpackfiles);
+    }
 
 	newfiles = Z_Malloc (numpackfiles * sizeof(packfile_t));
 
-	fseek (packhandle, header.dirofs, SEEK_SET);
-	fread (info, 1, header.dirlen, packhandle);
+	fseek(packhandle, header.dirofs, SEEK_SET);
+	freadsize = fread(info, 1, header.dirlen, packhandle);
 
-// crc the directory to check for modifications
-	checksum = Com_BlockChecksum ((void *)info, header.dirlen);
+    // crc the directory to check for modifications
+	checksum = Com_BlockChecksum((void *)info, header.dirlen);
 
 #ifdef NO_ADDONS
-	if (checksum != PAK0_CHECKSUM)
+	if (checksum != PAK0_CHECKSUM) {
 		return NULL;
+    }
 #endif
 // parse the directory
-	for (i=0 ; i<numpackfiles ; i++)
-	{
+	for (i=0 ; i<numpackfiles ; i++) {
 		strcpy (newfiles[i].name, info[i].name);
 		newfiles[i].filepos = LittleLong(info[i].filepos);
 		newfiles[i].filelen = LittleLong(info[i].filelen);

@@ -2518,7 +2518,7 @@ void StartServer_MenuInit( void )
 	char *buffer;
 	char  mapsname[1024];
 	char *s;
-	int length;
+	int length, freadsize;
 	int i;
 	FILE *fp;
 
@@ -2539,7 +2539,7 @@ void StartServer_MenuInit( void )
 		fseek(fp, 0, SEEK_SET);
 #endif
 		buffer = malloc( length );
-		fread( buffer, length, 1, fp );
+		freadsize = fread(buffer, length, 1, fp);
 	}
 
 	s = buffer;

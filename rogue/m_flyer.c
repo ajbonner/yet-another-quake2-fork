@@ -720,7 +720,7 @@ void flyer_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 }
 
 // PMM - kamikaze code .. blow up if blocked	
-int flyer_blocked (edict_t *self, float dist)
+qboolean flyer_blocked(edict_t *self, float dist)
 {
 	vec3_t origin;
 
@@ -817,7 +817,7 @@ void SP_monster_flyer (edict_t *self)
 }
 
 // PMM - suicide fliers
-void SP_monster_kamikaze (edict_t *self)
+void SP_monster_kamikaze(edict_t *self)
 {
 	if (deathmatch->value)
 	{

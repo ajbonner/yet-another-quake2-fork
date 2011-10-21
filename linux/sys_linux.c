@@ -225,10 +225,13 @@ void *Sys_GetGameAPI (void *parms)
 	setreuid(getuid(), getuid());
 	setegid(getgid());
 
-	if (game_library)
-		Com_Error (ERR_FATAL, "Sys_GetGameAPI without Sys_UnloadingGame");
+	if (game_library) {
+	    Com_Error(ERR_FATAL, "Sys_GetGameAPI without Sys_UnloadingGame");
+    }
 
-	getcwd(curpath, sizeof(curpath));
+	if (getcwd(curpath, sizeof(curpath)) == 0) {
+        Com_Error(ERR_FATAL, "Sys_GetGameAPI cannot get working directory");
+    }
 
 	Com_Printf("------- Loading %s -------\n", gamename);
 
