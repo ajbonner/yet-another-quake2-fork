@@ -1296,7 +1296,7 @@ int R_Init( void *hinstance, void *hWnd )
 		{
 			ri.Con_Printf( PRINT_ALL, "...using 3DFX_set_global_palette\n" );
 			qgl3DfxSetPaletteEXT = ( void ( APIENTRY * ) (GLuint *) )qwglGetProcAddress( "gl3DfxSetPaletteEXT" );
-			qglColorTableEXT = Fake_glColorTableEXT;
+			qglColorTableEXT = (void *)Fake_glColorTableEXT;
 		}
 		else
 		{

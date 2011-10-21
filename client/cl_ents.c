@@ -388,7 +388,7 @@ rest of the data stream.
 void CL_ParsePacketEntities (frame_t *oldframe, frame_t *newframe)
 {
 	int			newnum;
-	int			bits;
+	unsigned int			bits;
 	entity_state_t	*oldstate;
 	int			oldindex, oldnum;
 
@@ -412,7 +412,7 @@ void CL_ParsePacketEntities (frame_t *oldframe, frame_t *newframe)
 
 	while (1)
 	{
-		newnum = CL_ParseEntityBits (&bits);
+		newnum = CL_ParseEntityBits(&bits);
 		if (newnum >= MAX_EDICTS)
 			Com_Error (ERR_DROP,"CL_ParsePacketEntities: bad number:%i", newnum);
 
@@ -1092,23 +1092,24 @@ void CL_AddPacketEntities (frame_t *frame)
 					}
 				}
 
-				if (renderfx & RF_SHELL_DOUBLE)
-				{
-					if(Developer_searchpath(2) == 2)
-					{
+				if (renderfx & RF_SHELL_DOUBLE) {
+					if(Developer_searchpath(2) == 2) {
 						// lose the yellow shell if we have a red, blue, or green shell
-						if (renderfx & (RF_SHELL_RED|RF_SHELL_BLUE|RF_SHELL_GREEN))
+						if (renderfx & (RF_SHELL_RED|RF_SHELL_BLUE|RF_SHELL_GREEN)) {
 							renderfx &= ~RF_SHELL_DOUBLE;
+                        }
 						// if we have a red shell, turn it to purple by adding blue
-						if (renderfx & RF_SHELL_RED)
+						if (renderfx & RF_SHELL_RED) {
 							renderfx |= RF_SHELL_BLUE;
 						// if we have a blue shell (and not a red shell), turn it to cyan by adding green
-						else if (renderfx & RF_SHELL_BLUE)
+						} else if (renderfx & RF_SHELL_BLUE) {
 							// go to green if it's on already, otherwise do cyan (flash green)
-							if (renderfx & RF_SHELL_GREEN)
+							if (renderfx & RF_SHELL_GREEN) {
 								renderfx &= ~RF_SHELL_BLUE;
-							else
+                            } else {
 								renderfx |= RF_SHELL_GREEN;
+                            }
+                        }
 					}
 				}
 //			}

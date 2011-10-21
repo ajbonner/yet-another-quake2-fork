@@ -17,7 +17,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-#include <ctype.h>
 #ifdef _WIN32
 #include <io.h>
 #endif
@@ -1819,7 +1818,7 @@ void M_Menu_Credits_f( void )
 	int		isdeveloper = 0;
 
 	creditsBuffer = NULL;
-	count = FS_LoadFile ("credits", &creditsBuffer);
+	count = FS_LoadFile("credits", (void **) &creditsBuffer);
 	if (count != -1)
 	{
 		p = creditsBuffer;
@@ -1839,14 +1838,13 @@ void M_Menu_Credits_f( void )
 					break;
 			}
 			*p++ = 0;
-			if (--count == 0)
+			if (--count == 0) {
 				break;
+            }
 		}
 		creditsIndex[++n] = 0;
-		credits = creditsIndex;
-	}
-	else
-	{
+		credits = (const char**) creditsIndex;
+	} else {
 		isdeveloper = Developer_searchpath (1);
 		
 		if (isdeveloper == 1)			// xatrix
@@ -2528,13 +2526,11 @@ void StartServer_MenuInit( void )
 	** load the list of map names
 	*/
 	Com_sprintf( mapsname, sizeof( mapsname ), "%s/maps.lst", FS_Gamedir() );
-	if ( ( fp = fopen( mapsname, "rb" ) ) == 0 )
-	{
-		if ( ( length = FS_LoadFile( "maps.lst", ( void ** ) &buffer ) ) == -1 )
-			Com_Error( ERR_DROP, "couldn't find maps.lst\n" );
-	}
-	else
-	{
+	if (( fp = fopen( mapsname, "rb" )) == 0) {
+		if ((length = FS_LoadFile( "maps.lst", (void **) &buffer)) == -1) {
+			Com_Error( ERR_DROP, "couldn't find maps.lst\n");
+        }
+	} else {
 #ifdef _WIN32
 		length = filelength( fileno( fp  ) );
 #else
@@ -2603,7 +2599,7 @@ void StartServer_MenuInit( void )
 	s_startmap_list.generic.x	= 0;
 	s_startmap_list.generic.y	= 0;
 	s_startmap_list.generic.name	= "initial map";
-	s_startmap_list.itemnames = mapnames;
+	s_startmap_list.itemnames = (const char**) mapnames;
 
 	s_rules_box.generic.type = MTYPE_SPINCONTROL;
 	s_rules_box.generic.x	= 0;
@@ -3395,7 +3391,7 @@ static void RateCallback( void *unused )
 
 static void ModelCallback( void *unused )
 {
-	s_player_skin_box.itemnames = s_pmi[s_player_model_box.curvalue].skindisplaynames;
+	s_player_skin_box.itemnames = (const char**) s_pmi[s_player_model_box.curvalue].skindisplaynames;
 	s_player_skin_box.curvalue = 0;
 }
 
@@ -3684,7 +3680,7 @@ qboolean PlayerConfig_MenuInit( void )
 	s_player_model_box.generic.callback = ModelCallback;
 	s_player_model_box.generic.cursor_offset = -48;
 	s_player_model_box.curvalue = currentdirectoryindex;
-	s_player_model_box.itemnames = s_pmnames;
+	s_player_model_box.itemnames = (const char**) s_pmnames;
 
 	s_player_skin_title.generic.type = MTYPE_SEPARATOR;
 	s_player_skin_title.generic.name = "skin";
@@ -3698,7 +3694,7 @@ qboolean PlayerConfig_MenuInit( void )
 	s_player_skin_box.generic.callback = 0;
 	s_player_skin_box.generic.cursor_offset = -48;
 	s_player_skin_box.curvalue = currentskinindex;
-	s_player_skin_box.itemnames = s_pmi[currentdirectoryindex].skindisplaynames;
+	s_player_skin_box.itemnames = (const char**) s_pmi[currentdirectoryindex].skindisplaynames;
 
 	s_player_hand_title.generic.type = MTYPE_SEPARATOR;
 	s_player_hand_title.generic.name = "handedness";

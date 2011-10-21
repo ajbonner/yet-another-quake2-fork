@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
   */
 
+#include <stdint.h>
 #include "client.h"
 
 float		scr_con_current;	// aproaches scr_conlines at scr_conspeed
@@ -612,11 +613,11 @@ int entitycmpfnc( const entity_t *a, const entity_t *b )
 	*/
 	if ( a->model == b->model )
 	{
-		return ( ( int ) a->skin - ( int ) b->skin );
+		return ( ( intptr_t ) a->skin - ( intptr_t ) b->skin );
 	}
 	else
 	{
-		return ( ( int ) a->model - ( int ) b->model );
+		return ( ( intptr_t ) a->model - ( intptr_t ) b->model );
 	}
 }
 

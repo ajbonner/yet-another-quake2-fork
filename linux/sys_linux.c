@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/mman.h>
 #include <errno.h>
 #include <mntent.h>
+#include <dlfcn.h>
 
 #include <dlfcn.h>
 
@@ -91,7 +92,7 @@ void Sys_Quit (void)
 {
 	CL_Shutdown ();
 	Qcommon_Shutdown ();
-    fcntl (0, F_SETFL, fcntl (0, F_GETFL, 0) & ~FNDELAY);
+    fcntl (0, F_SETFL, fcntl (0, F_GETFL, 0) & ~O_NDELAY);
 	_exit(0);
 }
 
@@ -108,7 +109,7 @@ void Sys_Error (char *error, ...)
     char        string[1024];
 
 // change stdin to non blocking
-    fcntl (0, F_SETFL, fcntl (0, F_GETFL, 0) & ~FNDELAY);
+    fcntl (0, F_SETFL, fcntl (0, F_GETFL, 0) & ~O_NDELAY);
 
 	CL_Shutdown ();
 	Qcommon_Shutdown ();
@@ -291,11 +292,11 @@ int main (int argc, char **argv)
 
 	Qcommon_Init(argc, argv);
 
-	fcntl(0, F_SETFL, fcntl (0, F_GETFL, 0) | FNDELAY);
+	fcntl(0, F_SETFL, fcntl (0, F_GETFL, 0) | O_NDELAY);
 
 	nostdout = Cvar_Get("nostdout", "0", 0);
 	if (!nostdout->value) {
-		fcntl(0, F_SETFL, fcntl (0, F_GETFL, 0) | FNDELAY);
+		fcntl(0, F_SETFL, fcntl (0, F_GETFL, 0) | O_NDELAY);
 //		printf ("Linux Quake -- Version %0.3f\n", LINUX_VERSION);
 	}
 

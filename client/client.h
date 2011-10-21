@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "ref.h"
 
@@ -140,11 +141,11 @@ typedef struct
 	//
 	// non-gameserver infornamtion
 	// FIXME: move this cinematic stuff into the cin_t structure
-	FILE		*cinematic_file;
-	int			cinematictime;		// cls.realtime for first cinematic frame
-	int			cinematicframe;
-	char		cinematicpalette[768];
-	qboolean	cinematicpalette_active;
+	FILE		  *cinematic_file;
+	int			  cinematictime;		// cls.realtime for first cinematic frame
+	int			  cinematicframe;
+	qboolean	  cinematicpalette_active;
+	unsigned char cinematicpalette[768];
 
 	//
 	// server state information

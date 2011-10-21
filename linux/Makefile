@@ -38,7 +38,8 @@ CTF_DIR=$(MOUNT_DIR)/ctf
 XATRIX_DIR=$(MOUNT_DIR)/xatrix
 ROGUE_DIR=$(MOUNT_DIR)/rogue
 
-CC=gcc
+CC=gcc -fno-strict-aliasing -fstack-protector-all -pipe -g -MMD
+
 BASE_CFLAGS=-Dstricmp=strcasecmp
 
 # -ffunroll-loops breaks build
@@ -1286,9 +1287,11 @@ clean: clean-debug clean-release
 
 clean-debug:
 	$(MAKE) clean2 BUILDDIR=$(BUILD_DEBUG_DIR) CFLAGS="$(DEBUG_CFLAGS)"
+	rm -rf debug$(ARCH)
 
 clean-release:
 	$(MAKE) clean2 BUILDDIR=$(BUILD_RELEASE_DIR) CFLAGS="$(DEBUG_CFLAGS)"
+	rm -rf release$(ARCH)
 
 clean2:
 	-rm -f \
